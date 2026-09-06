@@ -34,7 +34,8 @@
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
-    font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Inter, sans-serif;
+    background:var(--bg); color:var(--ink);
     min-height:100vh; padding-bottom:104px; transition:background .2s,color .2s;
     -webkit-font-smoothing:antialiased;
     background-image:radial-gradient(circle at 15% 8%, var(--gold-soft) 0%, transparent 40%),
@@ -94,7 +95,7 @@
   .field label{display:block; font-size:11px; color:var(--ink-dim); margin-bottom:5px; font-weight:600;}
   .field input{
     width:100%; background:var(--card-alt); border:1px solid var(--gold-line); color:var(--ink);
-    border-radius:9px; padding:11px 12px; font-size:14.5px; font-family:'Inter',sans-serif;
+    border-radius:9px; padding:11px 12px; font-size:14.5px; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Inter, sans-serif;
     outline:none; transition:border-color .15s;
   }
   .field input:focus{border-color:var(--gold);}
@@ -128,14 +129,14 @@
 
   .add-btn{
     width:100%; background:var(--maroon); color:#FBF4E6; border:none; border-radius:9px;
-    padding:13px; font-size:14px; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer;
+    padding:13px; font-size:14px; font-weight:700; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Inter, sans-serif; cursor:pointer;
     margin-top:6px; letter-spacing:.02em;
   }
   .add-btn:active{opacity:.85;}
 
   .search{
     width:100%; background:var(--card); border:1px solid var(--gold-line); color:var(--ink);
-    border-radius:9px; padding:10px 14px; font-size:13.5px; font-family:'Inter',sans-serif;
+    border-radius:9px; padding:10px 14px; font-size:13.5px; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Inter, sans-serif;
     outline:none; margin-bottom:10px;
   }
   .search::placeholder{color:var(--ink-faint);}
@@ -185,7 +186,7 @@
   .share-row{max-width:480px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   .share-btn{
     padding:12.5px; border-radius:10px; font-size:13.5px; font-weight:700;
-    font-family:'Inter',sans-serif; cursor:pointer; border:1px solid var(--gold-line);
+    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Inter, sans-serif; cursor:pointer; border:1px solid var(--gold-line);
     background:var(--card-alt); color:var(--ink); display:flex; align-items:center;
     justify-content:center; gap:6px; letter-spacing:.01em;
   }
@@ -284,6 +285,9 @@ function save(){
 
 function fmt(n){
   return '₹' + Number(n).toLocaleString('en-IN', {maximumFractionDigits:0});
+}
+function fmtPdf(n){
+  return 'Rs. ' + Number(n).toLocaleString('en-IN', {maximumFractionDigits:0});
 }
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -501,7 +505,7 @@ document.getElementById('sharePdfBtn').addEventListener('click', ()=>{
     if(y > 275){ doc.addPage(); y = 20; }
     doc.text(String(i+1), 20, y);
     doc.text(g.name.substring(0,44), 34, y);
-    doc.text(fmt(g.net), 165, y);
+    doc.text(fmtPdf(g.net), 165, y);
     y += 7;
   });
 
@@ -509,7 +513,7 @@ document.getElementById('sharePdfBtn').addEventListener('click', ()=>{
   doc.setDrawColor(176,138,52); doc.line(30, y, 180, y); y += 9;
   doc.setFont('times','bold'); doc.setFontSize(12);
   doc.text(`Total guests: ${state.guests.length}`, 105, y, {align:'center'}); y += 7;
-  doc.text(`Total amount: ${fmt(state.guests.reduce((s,g)=>s+g.net,0))}`, 105, y, {align:'center'});
+  doc.text(`Total amount: ${fmtPdf(state.guests.reduce((s,g)=>s+g.net,0))}`, 105, y, {align:'center'});
 
   doc.save(`${title.replace(/\s+/g,'_')}.pdf`);
   showToast('PDF downloaded');
