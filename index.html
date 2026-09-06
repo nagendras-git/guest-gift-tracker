@@ -93,4 +93,430 @@
   .field{margin-bottom:11px;}
   .field label{display:block; font-size:11px; color:var(--ink-dim); margin-bottom:5px; font-weight:600;}
   .field input{
-    width:100%; background:var(--card-alt); border:1px solid var(--gold-line); color:var(
+    width:100%; background:var(--card-alt); border:1px solid var(--gold-line); color:var(--ink);
+    border-radius:9px; padding:11px 12px; font-size:14.5px; font-family:'Inter',sans-serif;
+    outline:none; transition:border-color .15s;
+  }
+  .field input:focus{border-color:var(--gold);}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+  .return-toggle{
+    display:flex; align-items:center; gap:10px; cursor:pointer; padding:4px 2px 12px;
+    user-select:none;
+  }
+  .toggle-switch{
+    width:38px; height:22px; border-radius:11px; background:var(--card-alt);
+    border:1px solid var(--gold-line); position:relative; flex-shrink:0; transition:background .15s;
+  }
+  .toggle-knob{
+    position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%;
+    background:var(--ink-faint); transition:left .15s, background .15s;
+  }
+  .return-toggle.on .toggle-switch{background:var(--maroon-soft); border-color:var(--maroon);}
+  .return-toggle.on .toggle-knob{left:18px; background:var(--maroon);}
+  .toggle-label{font-size:13px; color:var(--ink-dim); font-weight:600;}
+  .return-toggle.on .toggle-label{color:var(--ink);}
+
+  .return-field{display:none;}
+  .return-field.show{display:block;}
+
+  .change-hint{
+    font-size:12.5px; color:var(--warn); background:var(--warn-soft);
+    border-radius:8px; padding:8px 10px; margin-top:2px; display:none; text-align:center;
+  }
+  .change-hint.show{display:block;}
+
+  .add-btn{
+    width:100%; background:var(--maroon); color:#FBF4E6; border:none; border-radius:9px;
+    padding:13px; font-size:14px; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer;
+    margin-top:6px; letter-spacing:.02em;
+  }
+  .add-btn:active{opacity:.85;}
+
+  .search{
+    width:100%; background:var(--card); border:1px solid var(--gold-line); color:var(--ink);
+    border-radius:9px; padding:10px 14px; font-size:13.5px; font-family:'Inter',sans-serif;
+    outline:none; margin-bottom:10px;
+  }
+  .search::placeholder{color:var(--ink-faint);}
+
+  /* registry list, receipt style */
+  .registry{background:var(--card); border:1px solid var(--gold-line); border-radius:16px; padding:6px 4px;}
+  .guest{
+    display:flex; align-items:center; gap:10px; padding:12px 14px;
+    border-bottom:1px dashed var(--gold-line);
+  }
+  .guest:last-child{border-bottom:none;}
+  .guest-idx{
+    font-family:'Playfair Display',serif; font-size:13px; color:var(--gold); font-weight:700;
+    width:20px; flex-shrink:0;
+  }
+  .guest-info{flex:1; min-width:0;}
+  .guest-name{font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .guest-meta{font-size:11.5px; color:var(--ink-dim); margin-top:2px; cursor:pointer;}
+  .guest-meta .ret{color:var(--warn);}
+  .guest-detail{
+    font-size:11px; color:var(--ink-dim); margin-top:4px; padding-top:4px;
+    border-top:1px dashed var(--gold-line); display:none;
+  }
+  .guest-detail.show{display:block;}
+  .guest-net{
+    font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--green);
+    text-align:right; flex-shrink:0;
+  }
+  .guest-del{
+    background:none; border:none; color:var(--ink-faint); font-size:16px; cursor:pointer;
+    padding:2px; flex-shrink:0;
+  }
+
+  .empty{text-align:center; padding:34px 20px; color:var(--ink-faint);}
+  .empty .ic{font-size:28px; margin-bottom:10px; opacity:.7;}
+  .empty p{font-size:13px; font-style:italic; font-family:'Playfair Display',serif;}
+
+  .footer-note{
+    text-align:center; font-size:11px; color:var(--ink-faint); padding:16px 0 6px;
+    font-style:italic; font-family:'Playfair Display',serif;
+  }
+
+  .share-bar{
+    position:fixed; bottom:0; left:0; right:0; background:var(--card);
+    border-top:1px solid var(--gold-line); padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+  .share-row{max-width:480px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .share-btn{
+    padding:12.5px; border-radius:10px; font-size:13.5px; font-weight:700;
+    font-family:'Inter',sans-serif; cursor:pointer; border:1px solid var(--gold-line);
+    background:var(--card-alt); color:var(--ink); display:flex; align-items:center;
+    justify-content:center; gap:6px; letter-spacing:.01em;
+  }
+  .share-btn.primary{background:var(--maroon); border-color:var(--maroon); color:#FBF4E6;}
+
+  .toast{
+    position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-60px);
+    background:var(--ink); color:var(--bg); padding:10px 18px; border-radius:20px;
+    font-size:12.5px; font-weight:600; transition:transform .25s; z-index:100;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body data-theme="light">
+<div class="wrap">
+  <div class="topbar">
+    <span class="toplabel">GUEST GIFT REGISTER</span>
+    <button class="theme-btn" id="themeToggle">☀️</button>
+  </div>
+
+  <div class="frame">
+    <div class="frame-inner">
+      <div class="motif">❁ ⚜ ❁</div>
+      <input class="event-name" id="eventName" placeholder="Name of the event" />
+      <div class="event-sub" id="dateLine">Guest contributions, recorded with care</div>
+
+      <div class="divider"><span class="line"></span><span class="sym">✦</span><span class="line"></span></div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num" id="statGuests">0</div>
+          <div class="lbl">GUESTS</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="statNet">₹0</div>
+          <div class="lbl">NET TOTAL</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✎ Add a Guest</div>
+    <div class="field">
+      <label>Guest name</label>
+      <input id="inpName" placeholder="e.g. Ramesh Uncle" />
+    </div>
+    <div class="field">
+      <label>Amount received</label>
+      <input id="inpGiven" type="number" inputmode="decimal" placeholder="1000" />
+    </div>
+
+    <label class="return-toggle" id="returnToggle">
+      <span class="toggle-switch"><span class="toggle-knob"></span></span>
+      <span class="toggle-label">Return change to this guest?</span>
+    </label>
+
+    <div class="field return-field" id="returnField">
+      <label>Guest actually wanted to give</label>
+      <input id="inpIntended" type="number" inputmode="decimal" placeholder="800" />
+    </div>
+
+    <div class="change-hint" id="changeHint"></div>
+    <button class="add-btn" id="addBtn">ADD TO REGISTER</button>
+  </div>
+
+  <input class="search" id="searchBox" placeholder="Search a guest by name..." />
+
+  <div class="registry" id="guestList"></div>
+
+  <div class="footer-note">— recorded and totalled automatically —</div>
+</div>
+
+<div class="share-bar">
+  <div class="share-row">
+    <button class="share-btn" id="shareTextBtn">📋 Share as text</button>
+    <button class="share-btn primary" id="sharePdfBtn">📄 Share as PDF</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'guestGiftRegister';
+let state = { eventName: '', guests: [] };
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) state = JSON.parse(raw);
+  }catch(e){}
+}
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function fmt(n){
+  return '₹' + Number(n).toLocaleString('en-IN', {maximumFractionDigits:0});
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function render(){
+  document.getElementById('eventName').value = state.eventName || '';
+  const query = document.getElementById('searchBox').value.trim().toLowerCase();
+  const list = document.getElementById('guestList');
+
+  const guests = state.guests
+    .map((g,i)=>({...g, idx:i}))
+    .filter(g => g.name.toLowerCase().includes(query));
+
+  if(state.guests.length === 0){
+    list.innerHTML = `<div class="empty"><div class="ic">🪔</div><p>The register is empty.<br>Add your first guest above.</p></div>`;
+  } else if(guests.length === 0){
+    list.innerHTML = `<div class="empty"><div class="ic">🔍</div><p>No guest matches "${query}"</p></div>`;
+  } else {
+    list.innerHTML = guests.map(g => {
+      const serial = g.idx + 1;
+      const hasReturn = g.returned > 0;
+      const detailText = hasReturn
+        ? `Received ${fmt(g.given)} · Returned ${fmt(g.returned)}`
+        : `Received ${fmt(g.given)}`;
+      return `
+      <div class="guest">
+        <div class="guest-idx">${serial}.</div>
+        <div class="guest-info">
+          <div class="guest-name">${g.name}</div>
+          <div class="guest-meta" data-idx="${g.idx}">tap for details ▾</div>
+          <div class="guest-detail" id="detail-${g.idx}">${detailText}</div>
+        </div>
+        <div class="guest-net">${fmt(g.net)}</div>
+        <button class="guest-del" data-idx="${g.idx}">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  const totalGuests = state.guests.length;
+  const totalNet = state.guests.reduce((s,g)=>s+g.net,0);
+
+  document.getElementById('statGuests').textContent = totalGuests;
+  document.getElementById('statNet').textContent = fmt(totalNet);
+}
+
+document.getElementById('guestList').addEventListener('click', (e)=>{
+  const metaEl = e.target.closest('.guest-meta');
+  if(metaEl){
+    const idx = metaEl.dataset.idx;
+    const detail = document.getElementById(`detail-${idx}`);
+    detail.classList.toggle('show');
+    metaEl.textContent = detail.classList.contains('show') ? 'hide details ▴' : 'tap for details ▾';
+    return;
+  }
+  const btn = e.target.closest('.guest-del');
+  if(!btn) return;
+  const idx = parseInt(btn.dataset.idx);
+  const name = state.guests[idx].name;
+  state.guests.splice(idx,1);
+  save();
+  render();
+  showToast(`Removed ${name}`);
+});
+
+let returnEnabled = false;
+
+document.getElementById('returnToggle').addEventListener('click', ()=>{
+  returnEnabled = !returnEnabled;
+  document.getElementById('returnToggle').classList.toggle('on', returnEnabled);
+  document.getElementById('returnField').classList.toggle('show', returnEnabled);
+  if(!returnEnabled){
+    document.getElementById('inpIntended').value = '';
+  }
+  updateHint();
+});
+
+document.getElementById('inpGiven').addEventListener('input', updateHint);
+document.getElementById('inpIntended').addEventListener('input', updateHint);
+
+function computeReturn(){
+  const given = parseFloat(document.getElementById('inpGiven').value) || 0;
+  const intended = document.getElementById('inpIntended').value;
+  if(!returnEnabled || intended === '') return 0;
+  const val = given - parseFloat(intended);
+  return val > 0 ? val : 0;
+}
+
+function updateHint(){
+  const given = parseFloat(document.getElementById('inpGiven').value) || 0;
+  const intendedRaw = document.getElementById('inpIntended').value;
+  const hint = document.getElementById('changeHint');
+  if(returnEnabled && intendedRaw !== '' && given > 0){
+    const intended = parseFloat(intendedRaw);
+    const diff = given - intended;
+    if(intended > given){
+      hint.textContent = `This is more than what was received — check the amount`;
+      hint.classList.add('show');
+    } else if(diff === 0){
+      hint.textContent = `No change needed`;
+      hint.classList.add('show');
+    } else {
+      hint.textContent = `Return ₹${diff.toLocaleString('en-IN')} to this guest`;
+      hint.classList.add('show');
+    }
+  } else {
+    hint.classList.remove('show');
+  }
+}
+
+document.getElementById('addBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('inpName').value.trim();
+  const given = parseFloat(document.getElementById('inpGiven').value);
+  const intendedRaw = document.getElementById('inpIntended').value;
+  const intended = (returnEnabled && intendedRaw !== '') ? parseFloat(intendedRaw) : given;
+
+  if(!name){ showToast('Enter guest name'); return; }
+  if(!given || given <= 0){ showToast('Enter amount received'); return; }
+  if(intended > given){ showToast("That's more than what was received"); return; }
+
+  const returned = Math.max(0, given - intended);
+  const net = given - returned;
+
+  state.guests.push({ name, given, returned, net, time: Date.now() });
+  save();
+
+  document.getElementById('inpName').value = '';
+  document.getElementById('inpGiven').value = '';
+  document.getElementById('inpIntended').value = '';
+  document.getElementById('changeHint').classList.remove('show');
+  returnEnabled = false;
+  document.getElementById('returnToggle').classList.remove('on');
+  document.getElementById('returnField').classList.remove('show');
+
+  render();
+  showToast(returned > 0 ? `Added — return ${fmt(returned)} to ${name}` : `Added ${name}`);
+});
+
+document.getElementById('searchBox').addEventListener('input', render);
+
+document.getElementById('eventName').addEventListener('input', (e)=>{
+  state.eventName = e.target.value;
+  save();
+});
+
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const cur = document.body.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.body.setAttribute('data-theme', next);
+  document.getElementById('themeToggle').textContent = next === 'light' ? '☀️' : '🌙';
+  localStorage.setItem('guestGiftRegisterTheme', next);
+});
+(function(){
+  const saved = localStorage.getItem('guestGiftRegisterTheme');
+  if(saved){
+    document.body.setAttribute('data-theme', saved);
+    document.getElementById('themeToggle').textContent = saved === 'light' ? '☀️' : '🌙';
+  }
+  document.getElementById('dateLine').textContent =
+    new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+})();
+
+function buildSummaryText(){
+  const title = state.eventName ? state.eventName : 'Guest Gift Register';
+  const lines = [title, ''];
+  state.guests.forEach((g,i)=>{
+    lines.push(`${i+1}. ${g.name} — ${fmt(g.net)}`);
+  });
+  lines.push('');
+  lines.push(`Total guests: ${state.guests.length}`);
+  lines.push(`Total amount: ${fmt(state.guests.reduce((s,g)=>s+g.net,0))}`);
+  return lines.join('\n');
+}
+
+document.getElementById('shareTextBtn').addEventListener('click', async ()=>{
+  if(state.guests.length === 0){ showToast('Add guests first'); return; }
+  const text = buildSummaryText();
+  if(navigator.share){
+    try{ await navigator.share({ title: state.eventName || 'Guest Gift Register', text }); return; }
+    catch(e){ /* cancelled or unsupported, fall through to copy */ }
+  }
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard');
+  }catch(e){
+    showToast('Could not copy — try PDF instead');
+  }
+});
+
+document.getElementById('sharePdfBtn').addEventListener('click', ()=>{
+  if(state.guests.length === 0){ showToast('Add guests first'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const title = state.eventName || 'Guest Gift Register';
+  let y = 20;
+
+  doc.setFont('times','bold'); doc.setFontSize(18);
+  doc.text(title, 105, y, {align:'center'}); y += 8;
+
+  doc.setFont('times','italic'); doc.setFontSize(10);
+  doc.text(new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), 105, y, {align:'center'}); y += 10;
+
+  doc.setDrawColor(176,138,52); doc.line(30, y, 180, y); y += 10;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('#', 20, y); doc.text('Guest', 34, y); doc.text('Amount', 165, y);
+  y += 6;
+  doc.setDrawColor(220,210,180); doc.line(20, y-4, 190, y-4);
+
+  doc.setFont('helvetica','normal');
+  state.guests.forEach((g,i)=>{
+    if(y > 275){ doc.addPage(); y = 20; }
+    doc.text(String(i+1), 20, y);
+    doc.text(g.name.substring(0,44), 34, y);
+    doc.text(fmt(g.net), 165, y);
+    y += 7;
+  });
+
+  y += 6;
+  doc.setDrawColor(176,138,52); doc.line(30, y, 180, y); y += 9;
+  doc.setFont('times','bold'); doc.setFontSize(12);
+  doc.text(`Total guests: ${state.guests.length}`, 105, y, {align:'center'}); y += 7;
+  doc.text(`Total amount: ${fmt(state.guests.reduce((s,g)=>s+g.net,0))}`, 105, y, {align:'center'});
+
+  doc.save(`${title.replace(/\s+/g,'_')}.pdf`);
+  showToast('PDF downloaded');
+});
+
+load();
+render();
+</script>
+</body>
+</html>
